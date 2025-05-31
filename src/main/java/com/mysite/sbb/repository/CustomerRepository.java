@@ -20,6 +20,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 	// countBy변수명(변수값) -> 변수명에 대한 데이터의 개수
 	Integer countByGender(String gender);
 
-	// 
+	// 조건 키워드
 	Optional<Customer> findByNameAndAge(String name, Integer age);
+	
 }
