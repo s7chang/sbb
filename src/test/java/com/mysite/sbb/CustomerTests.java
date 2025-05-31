@@ -40,9 +40,8 @@ public class CustomerTests {
 	public void testSelectOne() {
 		// 스프링부트에서는 객체를 가져올 때 Optional 클래스를 감싸서 가져옴.
 		// -> NullPointerException을 방지하기 위해서
-		Optional<Customer> o = customerRepository.findById(3L);
-		if (o.isPresent()) {
-			Customer customer = o.get();
+		Optional<Customer> customer = customerRepository.findById(3L);
+		if (customer.isPresent()) {
 			log.info(customer.toString());
 		}
 		else {
@@ -56,9 +55,8 @@ public class CustomerTests {
 		customerRepository.deleteById(4L);
 		// 스프링부트에서는 객체를 가져올 때 Optional 클래스를 감싸서 가져옴.
 		// -> NullPointerException을 방지하기 위해서
-		Optional<Customer> o = customerRepository.findById(4L);
-		if (o.isPresent()) {
-			Customer customer = o.get();
+		Optional<Customer> customer = customerRepository.findById(4L);
+		if (customer.isPresent()) {
 			log.info(customer.toString());
 		}
 		else {
@@ -152,10 +150,9 @@ public class CustomerTests {
 	@DisplayName("customerId로 조회 (1건)")
 	public void testSelectByCustomerId() {
 		String id = "oho";
-		Optional<Customer> o = customerRepository.findByCustomerId(id);
+		Optional<Customer> customer = customerRepository.findByCustomerId(id);
 		
-		if (o.isPresent()) {
-			Customer customer = o.get();
+		if (customer.isPresent()) {
 			log.info(customer.toString());
 		}
 		else {
@@ -176,19 +173,35 @@ public class CustomerTests {
 	}
 
 	// 이름이 한동훈이고 나이가 33인 사람 조회 (1건)
-	@Test
+//	@Test
 	@DisplayName("이름이 한동훈이고 나이가 33인 사람 조회 (1건)")
 	public void testSelectByNameAndAge() {
 		String name = "한동훈";
 		Integer age = 33;
-		Optional<Customer> o = customerRepository.findByNameAndAge(name, age);
+		Optional<Customer> customer = customerRepository.findByNameAndAge(name, age);
 		
-		if (o.isPresent()) {
-			Customer customer = o.get();
+		if (customer.isPresent()) {
 			log.info("이름이 " + name + "이고 나이가 " + age + "인 사람: " + customer.toString());
 		}
 		else {
 			log.warning("이름이 " + name + "이고 나이가 " + age + "인 사람이 없습니다.");
 		}
 	}
+
+
+	// 
+	@Test
+	public void testVariableCondition() {
+		List<Customer> customerList1 = customerRepository.findByAgeGreaterThanEqualAndAgeLessThan(10, 20);
+		List<Customer> customerList2 = customerRepository.findByAgeOrAgeOrAge(18, 28, 33);
+
+		for (Customer customer : customerList1) {
+			log.info("10대인 사람: " + customer.toString());
+		}
+		
+		for (Customer customer : customerList2) {
+			log.info("18, 28, 33인 사람: " + customer.toString());
+		}
+	}
+
 }

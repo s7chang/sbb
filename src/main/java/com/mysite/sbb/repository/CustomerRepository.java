@@ -22,5 +22,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 	// 조건 키워드
 	Optional<Customer> findByNameAndAge(String name, Integer age);
-	
+	List<Customer> findByAgeGreaterThanEqualAndAgeLessThan(Integer ageMin, Integer ageMax);
+	List<Customer> findByAgeOrAgeOrAge(Integer age1, Integer age2, Integer age3);
 }
