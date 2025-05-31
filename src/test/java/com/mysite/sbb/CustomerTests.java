@@ -199,9 +199,11 @@ public class CustomerTests {
 			log.info("10대인 사람: " + customer.toString());
 		}
 		
-		for (Customer customer : customerList2) {
-			log.info("18, 28, 33인 사람: " + customer.toString());
-		}
+//		for (Customer customer : customerList2) {
+//			log.info("18, 28, 33인 사람: " + customer.toString());
+//		}
+		
+		customerList2.forEach(c -> log.info("18, 28, 33인 사람: " + c.toString()));
 	}
 
 }
