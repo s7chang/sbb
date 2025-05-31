@@ -19,7 +19,7 @@ import lombok.ToString;
 @ToString
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor()
+@NoArgsConstructor
 public class Customer {
 	// 기본키, MySQL에서는 auto_increment
 	@Id
@@ -32,8 +32,9 @@ public class Customer {
 	@Column(columnDefinition="varchar(50)")
 	private String name;
 
+	@Builder.Default
 	@Column(columnDefinition="varchar(10) default 'female'")
-	private String gender;
+	private String gender = "female";
 
 	private Integer age;
 

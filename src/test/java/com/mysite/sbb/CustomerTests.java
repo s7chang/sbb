@@ -3,6 +3,7 @@ package com.mysite.sbb;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,7 @@ public class CustomerTests {
 	private CustomerRepository customerRepository;
 
 	// 1번 - customer 테이블의 모든 데이터를 조회
-	@Test
+//	@Test
 	public void testSelectAll() {
 		List<Customer> customerList = customerRepository.findAll();
 		
@@ -77,7 +78,7 @@ public class CustomerTests {
 
 	// 5번 - customer 테이블에
 	// 'jgn', '장강남', 'male', 18, '010-1234-5678', '서울시 강남구 압구정동'
-	@Test
+//	@Test
 	public void testInsertOn() {
 		Customer customer = Customer.builder()
 								.customerId("jgn")
@@ -94,5 +95,100 @@ public class CustomerTests {
 //		customer.setPhone("010-1234-5678");
 //		customer.setAddress("서울시 강남구 압구정동");
 		customerRepository.save(customer);
+	}
+
+	// 5번 - customer 테이블에
+	// 'jgn', '장강남', 'male', 18, '010-1234-5678', '서울시 강남구 압구정동'
+	// 'oho', '오하영', 28, '010-4321-8888', '서울시 구로구 가리봉동'
+	// 'uji', '엄재일', 'male', 38, '010-3333-3333', '인천시 북구 월미동'
+	// 'ksb', '김사비', 'female', 19, '010-4444-7985', '경기도 성남시 중구 가구동'
+	// 'hdh', '한동훈', 'male', 33, '010-5151-3461', '전라북도 전주시'
+//	@Test
+	public void testInsertAll() {
+		List<Customer> customerList = List.of(
+			Customer.builder().customerId("jgn").name("장강남").gender("male").age(18)
+				.phone("010-1234-5678").address("서울시 강남구 압구정동").build(),
+	
+		    Customer.builder().customerId("oho").name("오하영").age(28)
+				.phone("010-4321-8888").address("서울시 구로구 가리봉동").build(),
+	
+	        Customer.builder().customerId("uji").name("엄재일").gender("male").age(38)
+				.phone("010-3333-3333").address("인천시 북구 월미동").build(),
+	
+	        Customer.builder().customerId("ksb").name("김사비").gender("female").age(19)
+				.phone("010-4444-7985").address("경기도 성남시 중구 가구동").build(),
+	
+	        Customer.builder().customerId("hdh").name("한동훈").gender("male").age(33)
+				.phone("010-5151-3461").address("전라북도 전주시").build()
+		);
+
+		for (Customer customer : customerList) {
+			log.info("이전: " + customer.toString());
+		}
+
+		customerRepository.saveAll(customerList);
+
+		for (Customer customer : customerList) {
+			log.info("이후: " + customer.toString());
+		}
+	}
+
+	// 6번 - count
+//	@Test
+	public void testCount() {
+		log.info("개수: " + customerRepository.count());
+	}
+
+	// 7번 - exist
+//	@Test
+	public void testExist() {
+		boolean isExist = customerRepository.existsById(37L);
+		log.info("37번 존재?: " + isExist);
+	}
+
+	///////////////////////////////////////////////////////////////////////
+	// customerId로 조회 (1건)
+//	@Test
+	@DisplayName("customerId로 조회 (1건)")
+	public void testSelectByCustomerId() {
+		String id = "oho";
+		Optional<Customer> o = customerRepository.findByCustomerId(id);
+		
+		if (o.isPresent()) {
+			Customer customer = o.get();
+			log.info(customer.toString());
+		}
+		else {
+			log.info("customerId가 " + id + "인 고객이 없습니다.");
+		}
+	}
+
+	// gender로 모두 조회
+//	@Test
+	@DisplayName("gender로 모두 조회")
+	public void testSelectByGender() {
+		String gender = "female";
+		List<Customer> customerList = customerRepository.findByGender(gender);
+		
+		for (Customer customer : customerList) {
+			log.info("성별이 " + gender + "인 사람: " + customer.toString());
+		}
+	}
+
+	// 이름이 한동훈이고 나이가 33인 사람 조회 (1건)
+	@Test
+	@DisplayName("이름이 한동훈이고 나이가 33인 사람 조회 (1건)")
+	public void testSelectByNameAndAge() {
+		String name = "한동훈";
+		Integer age = 33;
+		Optional<Customer> o = customerRepository.findByNameAndAge(name, age);
+		
+		if (o.isPresent()) {
+			Customer customer = o.get();
+			log.info("이름이 " + name + "이고 나이가 " + age + "인 사람: " + customer.toString());
+		}
+		else {
+			log.warning("이름이 " + name + "이고 나이가 " + age + "인 사람이 없습니다.");
+		}
 	}
 }
