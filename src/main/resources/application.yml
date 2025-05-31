@@ -1,0 +1,29 @@
+# 포트번호 변경
+server:
+  port: 8090
+
+# 브라우저 자동 새로 고침
+  
+# 기본 설정
+spring:
+  application:
+    name: sbb
+
+  # MySQL 데이터베이스 설정
+  datasource:
+    url: jdbc:mysql://localhost:33306/db01
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: tj01
+    password: 1234
+
+  # JPA 환경 설정
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+  devtools:
+    livereload:
+      enabled: true

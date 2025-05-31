@@ -1,0 +1,26 @@
+spring.application.name=sbb
+
+# 포트번호 변경
+server.port=8090
+
+# H2 데이터베이스 설정
+#spring.h2.console.enabled=true
+#spring.h2.console.path=/h2-console
+#spring.datasource.url=jdbc:h2:~/local
+#spring.datasource.driverClassName=org.h2.Driver
+#spring.datasource.username=sa
+#spring.datasource.password=
+
+# MySQL 데이터베이스 설정
+spring.datasource.url=jdbc:mysql://localhost:33306/db01
+spring.datasource.driverClassName=com.mysql.cj.jdbc.Driver
+spring.datasource.username=tj01
+spring.datasource.password=1234
+
+# JPA 환경 설정
+#spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.H2Dialect
+spring.jpa.hibernate.ddl-auto=update
+# 웹 서버를 기동할 때 SQL문을 보여줌
+spring.jpa.properties.hibernate.show_sql=true
+# SQL을 보여줄 때 포맷팅을 사용한다.
+spring.jpa.properties.hibernate.format_sql=true

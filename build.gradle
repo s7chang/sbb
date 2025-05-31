@@ -1,0 +1,46 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.0'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.mysite'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // devtools 설정 - 코드 변경 시에 웹 서버를 자동으로 실행, 브라우저 자동 새로 고침
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// lombok 설정
+	compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // H2 DBMS 설정
+    // runtimeOnly 'com.h2database:h2'
+    // MySQL 설정
+    implementation 'com.mysql:mysql-connector-j'
+    // JPA 설정
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	// JUnit 설정 - 레파지토리를 테스트하는 라이브러리
+    testImplementation 'org.junit.jupiter:junit-jupiter' 
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
