@@ -34,7 +34,7 @@ public class Customer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(columnDefinition="varchar(30)")
+	@Column(unique=true, columnDefinition="varchar(30)")
 	private String customerId;
 
 	@Column(columnDefinition="varchar(50)")
@@ -52,8 +52,10 @@ public class Customer {
 	private String address;
 
 	@CreatedDate
+	@Column(columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP not null")
 	private LocalDateTime createDate;
 
 	@LastModifiedDate
+	@Column(columnDefinition="TIMESTAMP default CURRENT_TIMESTAMP not null")
 	private LocalDateTime modifyDate;
 }

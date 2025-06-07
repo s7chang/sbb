@@ -1,5 +1,6 @@
 package com.mysite.sbb;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,22 +121,37 @@ public class CustomerTest01 {
 				.phone("010-4321-8888").address("서울시 구로구 가리봉동").build(),
 	
 	        Customer.builder().customerId("uji").name("엄재일").gender("male").age(38)
-				.phone("010-3333-3333").address("인천시 북구 월미동").build(),
+				.address("인천시 북구 월미동").build(),
 	
 	        Customer.builder().customerId("ksb").name("김사비").gender("female").age(19)
 				.phone("010-4444-7985").address("경기도 성남시 중구 가구동").build(),
 	
 	        Customer.builder().customerId("hdh").name("한동훈").gender("male").age(33)
+				.address("전라북도 전주시").build(),
+
+	        Customer.builder().customerId("hni").name("하나일").gender("male").age(39)
+				.phone("010-5151-3461").address("전라북도 전주시").build(),
+
+			Customer.builder().customerId("jjj").name("장정장").gender("male").age(33)
+				.phone("010-5151-3461").address("전라북도 전주시").build(),
+
+			Customer.builder().customerId("ddd").name("도대두").gender("male").age(33)
 				.phone("010-5151-3461").address("전라북도 전주시").build()
+
 		);
 
+		List<Customer> insertList = new ArrayList<>();
 		for (Customer customer : customerList) {
 			log.info("이전: " + customer.toString());
+
+			if (customerRepository.findByCustomerId(customer.getCustomerId()).isEmpty()) {
+				insertList.add(customer);
+			}
 		}
 
-		customerRepository.saveAll(customerList);
+		customerRepository.saveAll(insertList);
 
-		for (Customer customer : customerList) {
+		for (Customer customer : insertList) {
 			log.info("이후: " + customer.toString());
 		}
 	}
@@ -199,25 +215,44 @@ public class CustomerTest01 {
 
 
 	// 
-	@Test
+	// @Test
 	public void testVariableCondition() {
 		testInsertAll();
-		List<Customer> customerList1 = customerRepository.findByAgeBetween(20, 29);
-		List<Customer> customerList2 = customerRepository.findByAgeOrAgeOrAge(18, 28, 30);
-		List<Customer> customerList3 = customerRepository.findByAgeIn(List.of(18, 28, 30));
-		List<Customer> customerList4 = customerRepository.findByAgeNotIn(List.of(18, 28, 30));
+		// List<Customer> customerList1 = customerRepository.findByAgeBetween(20, 29);
+		// List<Customer> customerList2 = customerRepository.findByAgeOrAgeOrAge(18, 28, 30);
+		// List<Customer> customerList3 = customerRepository.findByAgeIn(List.of(18, 28, 30));
+		// List<Customer> customerList4 = customerRepository.findByAgeNotIn(List.of(18, 28, 30));
+		List<Customer> customerList5 = customerRepository.findByAgeGreaterThanEqualOrderByName(30);
+		List<Customer> customerList6 = customerRepository.findByAddressContainingOrderByAgeDesc("서울");
+		List<Customer> customerList7 = customerRepository.findFirst2ByOrderById();
+		List<Customer> customerList8 = customerRepository.findTop3ByAgeOrderById(33);
 
-		for (Customer customer : customerList1) {
-			log.info("20대인 사람: " + customer.toString());
-		}
+		// for (Customer customer : customerList1) {
+		// 	log.info("20대인 사람: " + customer.toString());
+		// }
 		
 //		for (Customer customer : customerList2) {
 //			log.info("18, 28, 33인 사람: " + customer.toString());
 //		}
 		
-		customerList2.forEach(c -> log.info("findByAgeOrAgeOrAge: 18, 28, 33인 사람: " + c.toString()));
-		customerList3.forEach(c -> log.info("findByAgeIn: 18, 28, 33인 사람: " + c.toString()));
-		customerList4.forEach(c -> log.info("findByAgeNotIn: 18, 28, 33이 아닌 사람: " + c.toString()));
+		// customerList2.forEach(c -> log.info("findByAgeOrAgeOrAge: 18, 28, 33인 사람: " + c.toString()));
+		// customerList3.forEach(c -> log.info("findByAgeIn: 18, 28, 33인 사람: " + c.toString()));
+		// customerList4.forEach(c -> log.info("findByAgeNotIn: 18, 28, 33이 아닌 사람: " + c.toString()));
+		customerList5.forEach(c -> log.info("findByAgeGreaterThanEqualOrderByName: 30세 이상인 사람: " + c.toString()));
+		customerList6.forEach(c -> log.info("findByAddressContainingOrderByAgeDesc: 서울에 사는 사람: " + c.toString()));
+		customerList7.forEach(c -> log.info("findFirst2ByOrderById: 아이디 순으로 2명: " + c.toString()));
+		customerList8.forEach(c -> log.info("findTop3ByAgeOrderById: 나이가 33살인 사람을 아이디 순으로 3명: " + c.toString()));
+
+		// customerRepository.deleteByPhoneIsNull();
 	}
 
+	@DisplayName("id가 4인 고객의 나이를 45로 수정")
+	@Test
+	public void updateAge() {
+		testInsertAll();
+
+		customerRepository.findById(4L).ifPresent(customer -> {
+			customer.setAge(45);
+		});
+	}
 }

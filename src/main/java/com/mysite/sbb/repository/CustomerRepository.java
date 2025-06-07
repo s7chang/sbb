@@ -27,4 +27,19 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
 	List<Customer> findByAgeOrAgeOrAge(Integer age1, Integer age2, Integer age3);
 	List<Customer> findByAgeIn(List<Integer> ageList);
 	List<Customer> findByAgeNotIn(List<Integer> ageList);
+
+	List<Customer> findByNameLike(String name);
+	List<Customer> findByNameNotLike(String name);
+	List<Customer> findByNameContaining(String name);
+	List<Customer> findByNameNotContaining(String name);
+	List<Customer> findByNameStartingWith(String name);
+	List<Customer> findByNameEndingWith(String name);
+
+	List<Customer> findByAgeGreaterThanEqualOrderByName(Integer age);
+	List<Customer> findByAddressContainingOrderByAgeDesc(String city);
+
+	List<Customer> findFirst2ByOrderById();
+	List<Customer> findTop3ByAgeOrderById(Integer age);
+
+	void deleteByPhoneIsNull();
 }

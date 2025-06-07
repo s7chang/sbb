@@ -12,7 +12,7 @@ spring:
 
   # MySQL 데이터베이스 설정
   datasource:
-    url: jdbc:mysql://localhost:33306/db01
+    url: jdbc:mysql://localhost:33306/db01_test?serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: tj01
     password: 1234
@@ -20,7 +20,7 @@ spring:
   # JPA 환경 설정
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         "[show_sql]": true
