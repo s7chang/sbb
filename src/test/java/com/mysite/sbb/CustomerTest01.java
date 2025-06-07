@@ -6,7 +6,11 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mysite.sbb.domain.Customer;
 import com.mysite.sbb.repository.CustomerRepository;
@@ -16,8 +20,13 @@ import lombok.extern.java.Log;
 // Customer 테이블의 CRUD를 테스트하는 클래스
 // Customer Entity 클래스에 대한 Repository를 활용
 @Log
-@SpringBootTest
-public class CustomerTests {
+// @SpringBootTest
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ActiveProfiles("test")  // application-test.yml 사용
+@Transactional
+@Rollback(false)
+public class CustomerTest01 {
 
 	// 빈으로 사용한 repository 인터페이스 등록
 	@Autowired
@@ -192,18 +201,23 @@ public class CustomerTests {
 	// 
 	@Test
 	public void testVariableCondition() {
-		List<Customer> customerList1 = customerRepository.findByAgeGreaterThanEqualAndAgeLessThan(10, 20);
-		List<Customer> customerList2 = customerRepository.findByAgeOrAgeOrAge(18, 28, 33);
+		testInsertAll();
+		List<Customer> customerList1 = customerRepository.findByAgeBetween(20, 29);
+		List<Customer> customerList2 = customerRepository.findByAgeOrAgeOrAge(18, 28, 30);
+		List<Customer> customerList3 = customerRepository.findByAgeIn(List.of(18, 28, 30));
+		List<Customer> customerList4 = customerRepository.findByAgeNotIn(List.of(18, 28, 30));
 
 		for (Customer customer : customerList1) {
-			log.info("10대인 사람: " + customer.toString());
+			log.info("20대인 사람: " + customer.toString());
 		}
 		
 //		for (Customer customer : customerList2) {
 //			log.info("18, 28, 33인 사람: " + customer.toString());
 //		}
 		
-		customerList2.forEach(c -> log.info("18, 28, 33인 사람: " + c.toString()));
+		customerList2.forEach(c -> log.info("findByAgeOrAgeOrAge: 18, 28, 33인 사람: " + c.toString()));
+		customerList3.forEach(c -> log.info("findByAgeIn: 18, 28, 33인 사람: " + c.toString()));
+		customerList4.forEach(c -> log.info("findByAgeNotIn: 18, 28, 33이 아닌 사람: " + c.toString()));
 	}
 
 }

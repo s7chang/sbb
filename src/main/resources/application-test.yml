@@ -1,4 +1,4 @@
-# 실제 웹 환경에서 사용하는 설정 파일
+# 테스트 환경에서 사용하는 설정 파일
 # 포트번호 변경
 server:
   port: 8090
@@ -20,11 +20,18 @@ spring:
   # JPA 환경 설정
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         "[show_sql]": true
         "[format_sql]": true
+    # defer-datasource-initialization: true
+
   devtools:
     livereload:
       enabled: true
+ 
+  # SQL 파일 자동 실행
+  # sql:
+  #   init:
+  #     mode: always
