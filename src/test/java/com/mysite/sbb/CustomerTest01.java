@@ -249,7 +249,7 @@ public class CustomerTest01 {
 	@DisplayName("id가 4인 고객의 나이를 45로 수정")
 	@Test
 	public void updateAge() {
-		testInsertAll();
+		// testInsertAll();
 
 		customerRepository.findById(4L).ifPresent(customer -> {
 			customer.setAge(45);

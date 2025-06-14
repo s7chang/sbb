@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.core.annotation.Order;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -91,5 +92,17 @@ public class CustomerTest02 {
         customerList.forEach(c -> log.info("남은 데이터: " + c.toString()));
 
         log.info("삭제 종료");
+    }
+
+    @Test
+    @Order(100)
+    @Transactional
+    @Commit
+    void deleteById2() {
+        Customer customer = Customer.builder().id(3L).build();
+        customerRepository.deleteById2(customer);
+
+        List<Customer> customerList = customerRepository.findAll();
+        customerList.forEach(c -> log.info("남은 데이터: " + c.toString()));
     }
 }

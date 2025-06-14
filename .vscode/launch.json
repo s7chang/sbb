@@ -9,6 +9,15 @@
             "projectName": "sbb",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Gradle Build",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "org.gradle.wrapper.GradleWrapperMain",
+            "args": "build --refresh-dependencies",
+            "vmArgs": "-Dfile.encoding=UTF-8"
         }
     ]
 }
