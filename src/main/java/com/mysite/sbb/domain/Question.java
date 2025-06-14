@@ -37,6 +37,7 @@ public class Question {
 
 	// 자동으로 현재 시스템의 날짜와 시간으로 설정
 	@CreatedDate
+	@Column(columnDefinition = "datetime default now()")
 	private LocalDateTime createDate;
 
 	// ★★★★★

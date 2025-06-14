@@ -6,13 +6,27 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mysite.sbb.domain.Question;
 import com.mysite.sbb.repository.QuestionRepository;
 
+import lombok.extern.java.Log;
+
 // 레파지토리 테스트 클래스
-//@SpringBootTest
+@Log
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional
+@Rollback(false)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SbbApplicationTests {
 
 	// QuestionRepository를 bean으로 등록
@@ -21,19 +35,38 @@ class SbbApplicationTests {
 	private QuestionRepository questionRepository;
 
 	// 1. 데이터를 테이블에 저장 -> insert 문을 생성
-//	@Test
+	@Test
 	public void testJpaInsert() {
 		Question q1 = new Question();
-		q1.setSubject("sbb가 무엇인가요?");
-		q1.setContent("sbb에 대해서 알고 싶습니다.");
+		q1.setSubject("JPA란 무엇인가?");
+		q1.setContent("JPA는 스프링부트의 ORM 기술이다.");
 		q1.setCreateDate(LocalDateTime.now());
 		questionRepository.save(q1);
 
 		Question q2 = new Question();
-		q2.setSubject("스프링 부트 모델 질문입니다.");
-		q2.setContent("id는 자동으로 생성되나요?");
+		q2.setSubject("Lombok이란 무엇인가?");
+		q2.setContent("Lombok은 클래스의 생성자와 메서드를 자동으로 생성해주는 라이브러리이다.");
 		q2.setCreateDate(LocalDateTime.now());
 		questionRepository.save(q2);
+
+		Question q3 = new Question();
+		q3.setSubject("Entity란 무엇인가?");
+		q3.setContent("Entity는 데이터베이스의 테이블과 매핑되는 클래스이다.");
+		q3.setCreateDate(LocalDateTime.now());
+		questionRepository.save(q3);
+
+		Question q4 = new Question();
+		q4.setSubject("Thymeleaf란 무엇인가?");
+		q4.setContent("Thymeleaf는 타임리프는 스프링부트의 템플릿 엔진이다.");
+		q4.setCreateDate(LocalDateTime.now());
+		questionRepository.save(q4);
+
+		Question q5 = new Question();
+		q5.setSubject("QueryDSL이란 무엇인가?");
+		q5.setContent("QueryDSL은 스프링부트의 ORM 기술이다.");
+		q5.setCreateDate(LocalDateTime.now());
+		questionRepository.save(q5);
+
 	}
 
 	// 2. 테이블의 모든 데이터를 조회 -> select 문을 생성

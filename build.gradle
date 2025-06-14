@@ -45,10 +45,13 @@ dependencies {
 	// QueryDSL 설정
 	def querydslVersion = "5.1.0"
 	implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
-	implementation "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
 	annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+	// Thymeleaf 설정
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
 }
 
 tasks.named('test') {
@@ -63,9 +66,12 @@ sourceSets {
 }
 
 tasks.withType(JavaCompile).configureEach {
+	options.generatedSourceOutputDirectory = file(querydslDir)
 	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
 }
 
 clean {
 	delete file(querydslDir)
+	delete file("$buildDir/generated-sources")
+	delete file("bin/generated-sources")
 }
