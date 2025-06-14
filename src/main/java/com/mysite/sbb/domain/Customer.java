@@ -21,10 +21,10 @@ import lombok.ToString;
 
 // 엔터티 클래스
 @Entity
-@Builder
 @Getter
 @Setter
 @ToString
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
