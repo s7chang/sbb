@@ -14,7 +14,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,13 +37,13 @@ public class Question {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@NotEmpty(message = "제목은 필수 항목입니다.")
+	@NotBlank(message = "제목은 필수 항목입니다.")
 	// @Size(max = 200, message = "제목은 200자 이하로 입력해주세요.")
-	@Size(max = 10)
+	@Size(max = 200)
 	@Column(length = 200)
 	private String subject;
 
-	@NotEmpty(message = "내용은 필수 항목입니다.")
+	@NotBlank(message = "내용은 필수 항목입니다.")
 	@Column(columnDefinition = "TEXT")
 	private String content;
 

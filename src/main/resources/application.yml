@@ -14,8 +14,6 @@ spring:
   thymeleaf:
     cache: false
     prefix: file:src/main/resources/templates/
-  web:
-    locale: en
 
   # MySQL 데이터베이스 설정
   datasource:
