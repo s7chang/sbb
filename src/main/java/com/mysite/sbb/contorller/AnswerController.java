@@ -25,11 +25,12 @@ public class AnswerController {
     // 답변 등록
     @PostMapping("/create/{id}")
     public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid Answer answer, BindingResult bindingResult) {
+        Question question = this.questionService.getQuestion(id);
         // 유효성 검사
         if (bindingResult.hasErrors()) {
-            return String.format("redirect:/question/detail/%s", id);
+            model.addAttribute("question", question);
+            return "question_detail";
         }
-        Question question = this.questionService.getQuestion(id);
         this.answerService.create(question, answer.getContent());
         return String.format("redirect:/question/detail/%s", id);
     }

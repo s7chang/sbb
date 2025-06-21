@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
 import com.mysite.sbb.service.QuestionService;
 
@@ -35,7 +36,7 @@ public class QuestionController {
 
     // 질문 상세 조회
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id) {
+    public String detail(Model model, @PathVariable("id") Integer id, Answer answer) {
         Question question = this.questionService.getQuestion(id);
         model.addAttribute("question", question);
         return "question_detail";
