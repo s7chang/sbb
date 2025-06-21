@@ -3,13 +3,16 @@ package com.mysite.sbb.domain;
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,6 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -27,6 +31,7 @@ public class Answer {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@NotEmpty(message = "내용은 필수 항목입니다.")
 	@Column(columnDefinition = "TEXT")
 	private String content;
 

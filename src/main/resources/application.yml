@@ -10,6 +10,13 @@ spring:
   application:
     name: sbb
 
+  # HTML 파일 자동 리로드 설정 (thymeleaf 포함)
+  thymeleaf:
+    cache: false
+    prefix: file:src/main/resources/templates/
+  web:
+    locale: en
+
   # MySQL 데이터베이스 설정
   datasource:
     url: jdbc:mysql://localhost:33306/db01

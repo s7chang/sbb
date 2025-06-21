@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>질문 목록</title>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}">
-</head>
-<body>
-<div class="container my-3">
-    <table class="table">
-        <thead class="table-dark">
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성일시</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="question, loop : ${questionList}">
-                <td th:text="${loop.count}">1</td>
-                <td>
-                    <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}">질문 제목</a>
-                </td>
-                <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00:00</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-</body>
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <table class="table">
+            <thead class="table-dark">
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성일시</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="question, loop : ${questionList}">
+                    <td th:text="${loop.count}">1</td>
+                    <td>
+                        <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}">질문 제목</a>
+                    </td>
+                    <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00:00</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- 질문 등록하기 버튼 -->
+        <a class="btn btn-primary" href="/question/create" role="button">질문 등록하기</a>
+    </div>
 </html>

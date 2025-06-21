@@ -2,15 +2,17 @@ package com.mysite.sbb.contorller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
 import com.mysite.sbb.service.AnswerService;
 import com.mysite.sbb.service.QuestionService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -22,9 +24,13 @@ public class AnswerController {
 
     // 답변 등록
     @PostMapping("/create/{id}")
-    public String createAnswer(Model model, @PathVariable("id") Integer id, @RequestParam("content") String content) {
+    public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid Answer answer, BindingResult bindingResult) {
+        // 유효성 검사
+        if (bindingResult.hasErrors()) {
+            return String.format("redirect:/question/detail/%s", id);
+        }
         Question question = this.questionService.getQuestion(id);
-        this.answerService.create(question, content);
+        this.answerService.create(question, answer.getContent());
         return String.format("redirect:/question/detail/%s", id);
     }
 }

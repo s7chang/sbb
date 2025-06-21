@@ -14,12 +14,20 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 // Entity 클래스는 JPA에 의해 자동으로 데이터베이스의 테이블로 생성된다.
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 public class Question {
@@ -29,9 +37,13 @@ public class Question {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	@NotEmpty(message = "제목은 필수 항목입니다.")
+	// @Size(max = 200, message = "제목은 200자 이하로 입력해주세요.")
+	@Size(max = 10)
 	@Column(length = 200)
 	private String subject;
 
+	@NotEmpty(message = "내용은 필수 항목입니다.")
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
