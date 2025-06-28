@@ -1,6 +1,9 @@
 package com.mysite.sbb.contorller;
 
+import java.security.Principal;
+
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,17 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.domain.UserEntity;
 import com.mysite.sbb.service.QuestionService;
+import com.mysite.sbb.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/question") 
 public class QuestionController {
 
     private final QuestionService questionService;
+    private final UserService userService;
 
     // 질문 목록 조회
     @GetMapping("/list")
@@ -44,18 +50,21 @@ public class QuestionController {
 
     // 질문 등록 폼
     @GetMapping("/create")
+    @PreAuthorize("isAuthenticated()")
     public String questionCreate(Question question) {
         return "question_form";
     }
 
     // 질문 등록 처리
     @PostMapping("/create")
-    public String questionCreate(@Valid Question question, BindingResult bindingResult) {
+    @PreAuthorize("isAuthenticated()")
+    public String questionCreate(@Valid Question question, BindingResult bindingResult, Principal principal) {
         // 유효성 검사
         if (bindingResult.hasErrors()) {
             return "question_form";
         }
-        this.questionService.create(question.getSubject(), question.getContent());
-        return "redirect:/question/list";
+        UserEntity author = this.userService.getUser(principal.getName());
+        this.questionService.create(question.getSubject(), question.getContent(), author);
+        return "redirect:/";
     }
 }

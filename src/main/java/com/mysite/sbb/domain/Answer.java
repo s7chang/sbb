@@ -45,4 +45,8 @@ public class Answer {
 	// N:1 관계를 설정 (외래키가 설정될 것이다)
 	@ManyToOne
 	private Question question;
+
+	// 작성자 추가
+	@ManyToOne
+	private UserEntity author;
 }

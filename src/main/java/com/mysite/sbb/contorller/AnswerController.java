@@ -1,5 +1,8 @@
 package com.mysite.sbb.contorller;
 
+import java.security.Principal;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.domain.UserEntity;
 import com.mysite.sbb.service.AnswerService;
 import com.mysite.sbb.service.QuestionService;
+import com.mysite.sbb.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +26,21 @@ import lombok.RequiredArgsConstructor;
 public class AnswerController {
     private final QuestionService questionService;
     private final AnswerService answerService;
+    private final UserService userService;
 
     // 답변 등록
     @PostMapping("/create/{id}")
-    public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid Answer answer, BindingResult bindingResult) {
+    @PreAuthorize("isAuthenticated()")
+    public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid Answer answer, BindingResult bindingResult, Principal principal) {
         Question question = this.questionService.getQuestion(id);
+        UserEntity author = this.userService.getUser(principal.getName());
+
         // 유효성 검사
         if (bindingResult.hasErrors()) {
             model.addAttribute("question", question);
             return "question_detail";
         }
-        this.answerService.create(question, answer.getContent());
+        this.answerService.create(question, answer.getContent(), author);
         return String.format("redirect:/question/detail/%s", id);
     }
 }

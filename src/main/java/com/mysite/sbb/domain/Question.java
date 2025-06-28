@@ -13,6 +13,7 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -60,4 +61,8 @@ public class Question {
 	// CascadeType.REMOVE는 질문을 삭제하면 자동으로(강제적으로) 그 질문에 대한 답변도 모두 삭제한다. 
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
 	private List<Answer> answerList;
+
+	// 작성자 추가
+	@ManyToOne
+	private UserEntity author;
 }

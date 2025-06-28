@@ -1,5 +1,6 @@
 package com.mysite.sbb.service;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.domain.Question;
+import com.mysite.sbb.domain.UserEntity;
 import com.mysite.sbb.exception.DataNotFoundException;
 import com.mysite.sbb.repository.QuestionRepository;
 
@@ -29,10 +31,11 @@ public class QuestionService {
                 .orElseThrow(() -> new DataNotFoundException("존재하지 않는 질문입니다."));
     }
 
-    public void create(String subject, String content) {
+    public void create(String subject, String content, UserEntity author) {
         Question q = Question.builder()
             .subject(subject)
             .content(content)
+            .author(author)
             .build();
         this.questionRepository.save(q);
     }
