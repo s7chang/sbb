@@ -1,5 +1,6 @@
 <html layout:decorate="~{layout}">
     <div layout:fragment="content" class="container my-3">
+        <!-- 질문 목록 테이블 -->
         <table class="table">
             <thead class="table-dark">
                 <tr>
@@ -9,12 +10,19 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- 질문 목록 출력 -->
                 <tr th:each="question, loop : ${paging}">
                     <td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}">1</td>
                     <td>
+                        <!-- 질문 상세 페이지 링크 및 제목 출력 -->
                         <a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
-                        <span th:if="${#lists.size(question.answerList) > 0}" th:text="${#lists.size(question.answerList)}" class="text-danger small ms-2 badge bg-warning"></span>
+                        <!-- 답변이 1개 이상이면 답변 개수 뱃지로 표시 -->
+                        <span th:if="${#lists.size(question.answerList) > 0}" th:text="${#lists.size(question.answerList)}"
+                            class="text-danger small ms-2">
+                            <!-- class="text-danger small ms-2 badge bg-warning"> -->
+                        </span>
                     </td>
+                    <!-- 질문 작성일시를 yyyy-MM-dd HH:mm:ss 형식으로 출력 -->
                     <td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00:00</td>
                 </tr>
             </tbody>
@@ -22,6 +30,12 @@
         <!-- 페이징 처리 -->
         <div th:if="${paging.totalPages > 1}">
             <ul class="pagination justify-content-center">
+                <!-- 처음 -->
+                <li class="page-item" th:classappend="${paging.number == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{|?page=0|}">
+                        <span>처음</span>
+                    </a>
+                </li>
                 <!-- 이전 -->
                 <li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
                     <a class="page-link" th:href="@{|?page=${paging.number-1}|}">
@@ -32,12 +46,18 @@
                 <li th:each="page: ${#numbers.sequence(0, paging.totalPages - 1)}"
                   th:if="${page >= paging.number-5 and page <= paging.number+5}"
                   th:classappend="${paging.number == page} ? 'active'" class="page-item">
-                    <a th:text="${page + 1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+                    <a class="page-link" th:href="@{|?page=${page}|}" th:text="${page + 1}"></a>
                 </li>
                 <!-- 다음 -->
                 <li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
                     <a class="page-link" th:href="@{|?page=${paging.number+1}|}">
                         <span>다음</span>
+                    </a>
+                </li>
+                <!-- 마지막 -->
+                <li class="page-item" th:classappend="${paging.number == paging.totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{|?page=${paging.totalPages - 1}|}">
+                        <span>마지막</span>
                     </a>
                 </li>
             </ul>

@@ -1,0 +1,28 @@
+<html layout:decorate="~{layout}">
+    <div layout:fragment="content" class="container my-3">
+        <div class="my-3 border-bottom">
+            <h4>회원 가입</h4>
+        </div>
+        <form action="/user/signup" method="post" th:object="${siteUser}">
+            <!-- validation 검증 -->
+            <div th:replace="~{form_errors :: formErrorsFragment}"></div>
+            <div class="mb-3">
+                <label for="username" class="form-label">사용자 ID</label>
+                <input type="text" name="username" id="username" class="form-control" th:field="*{username}" placeholder="사용자 ID를 입력해주세요.">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">비밀번호</label>
+                <input type="password" name="password" id="password" class="form-control" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
+            </div>
+            <div class="mb-3">
+                <label for="password2" class="form-label">비밀번호 확인</label>
+                <input type="password" name="password2" id="password2" class="form-control" th:field="*{password2}" placeholder="비밀번호 확인을 입력해주세요.">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">이메일</label>
+                <input type="email" name="email" id="email" class="form-control" th:field="*{email}" placeholder="이메일을 입력해주세요.">
+            </div>
+            <input type="submit" value="저장하기" class="btn btn-primary my-2">
+        </form>
+    </div>
+</html>
