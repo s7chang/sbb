@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.CascadeType;
@@ -48,10 +49,17 @@ public class Question {
 	@Column(columnDefinition = "TEXT")
 	private String content;
 
+	// 생성시각
 	// 자동으로 현재 시스템의 날짜와 시간으로 설정
 	@CreatedDate
 	@Column(columnDefinition = "datetime default now()")
 	private LocalDateTime createDate;
+
+	// 수정시각
+	// 자동으로 현재 시스템의 날짜와 시간으로 설정
+	@LastModifiedDate
+	@Column(columnDefinition = "datetime default now()")
+	private LocalDateTime modifyDate;
 
 	// ★★★★★
 	// 질문 1개에 대한 답변은 여러 개가 생성됨
