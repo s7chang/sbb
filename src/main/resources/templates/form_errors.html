@@ -1,4 +1,14 @@
 <!-- 에러 메시지 표시 -->
-<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}" id="validation-error">
     <div th:each="err : ${#fields.allErrors()}" th:text="${err}"></div>
 </div>
+
+<script>
+    // 페이지 로딩 후 에러 메시지가 있다면 해당 위치로 스크롤
+    window.addEventListener("DOMContentLoaded", () => {
+      const errorBox = document.getElementById("validation-error");
+      if (errorBox) {
+        errorBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+</script>
