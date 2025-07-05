@@ -12,7 +12,7 @@ spring:
 
   # MySQL 데이터베이스 설정
   datasource:
-    url: jdbc:mysql://localhost:33306/db01_test?serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/db01_test?serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: tj01
     password: 1234

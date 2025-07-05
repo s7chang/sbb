@@ -3,6 +3,7 @@ package com.mysite.sbb.contorller;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,8 @@ public class UserController {
     }
 
     @GetMapping("/signup")
-    public String signup(UserEntity siteUser) {
+    public String signup(UserEntity siteUser, Model model) {
+        model.addAttribute("siteUser", siteUser);
         return "signup_form";
     }
 

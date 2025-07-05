@@ -2,7 +2,6 @@
   "java.configuration.runtimes": [
     {
       "name": "JavaSE-21",
-      "path": "D:/sb250524/jdk-21.0.7",
       "default": true
     }
   ],
