@@ -40,8 +40,17 @@ public class QuestionService {
     }
 
     public void modify(Question question, String subject, String content) {
+        // 실제로 내용이 변경되었는지 확인
+        boolean isChanged = !question.getSubject().equals(subject) || !question.getContent().equals(content);
+        
         question.setSubject(subject);
         question.setContent(content);
+        
+        // 실제로 변경되었을 때만 수정 횟수 증가
+        if (isChanged) {
+            question.setModifyCount(question.getModifyCount() + 1);
+        }
+        
         this.questionRepository.save(question);
     }
 
@@ -55,5 +64,15 @@ public class QuestionService {
         sorts.add(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
         return this.questionRepository.findAll(pageable);
+    }
+
+    // 추천 기능
+    public void vote(Question question, UserEntity user) {
+        if (question.getVoter().contains(user)) {
+            question.getVoter().remove(user);
+        } else {
+            question.getVoter().add(user);
+        }
+        this.questionRepository.save(question);
     }
 }

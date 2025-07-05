@@ -1,5 +1,11 @@
 <html layout:decorate="~{layout}">
     <div layout:fragment="content" class="container my-3">
+        <!-- 에러 메시지 표시 -->
+        <div th:if="${errorMessage}" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <span th:text="${errorMessage}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
         <!-- 질문 제목 -->
         <h2 class="border-bottom py-2" th:text="${question.subject}">질문 제목</h2>
         <div class="card my-3">
@@ -8,6 +14,13 @@
                     질문 내용이 표시됩니다.
                 </div>
                 <div class="d-flex justify-content-end">
+                    <div class="badge bg-light text-dark p-2 text-start" th:if="${question.modifyDate != null} and ${question.modifyDate != question.createDate}">
+                        <div class="mb-2">
+                            <span>modified at</span>
+                            <span th:if="${question.modifyCount != null and question.modifyCount > 0}" th:text="'(' + ${question.modifyCount} + '회)'">(1회)</span>
+                        </div>
+                        <div th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00</span></div>
+                    </div>
                     <div class="badge bg-light text-dark p-2 text-start">
                         <div class="mb-2">
                             <span th:if="${question.author != null}" th:text="${question.author.username}"></span>
@@ -15,23 +28,29 @@
                         <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00</span></div>
                     </div>
                 </div>
+                <div class="my-3">
+                    <a th:href="@{|/question/vote/${question.id}|}"
+                        class="btn btn-sm vote-btn"
+                        th:classappend="${#authorization.expression('isAuthenticated()') and question.voter.?[username == #authentication.getName()].size() > 0 ? 'btn-primary voted' : 'btn-outline-secondary'}"
+                        th:data-authenticated="${#authorization.expression('isAuthenticated()')}"
+                        th:data-is-author="${#authorization.expression('isAuthenticated()') and question.author != null and #authentication.getName() == question.author.username}"
+                        th:text="|추천 ${#sets.size(question.voter)}|">
+                    </a>
+                    <a th:href="@{|/question/modify/${question.id}|}"
+                        class="btn btn-sm btn-outline-secondary modify"
+                        sec:authorize="isAuthenticated()"
+                        th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+                        th:text="수정">
+                    </a>
+                    <a href="javascript:void(0);"
+                        th:data-uri="@{|/question/delete/${question.id}|}"
+                        class="btn btn-sm btn-outline-secondary delete"
+                        sec:authorize="isAuthenticated()"
+                        th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+                        th:text="삭제">
+                    </a>
+                </div>
             </div>
-        </div>
-
-        <div class="my-3">
-            <a th:href="@{|/question/modify/${question.id}|}"
-                class="btn btn-sm btn-outline-secondary modify"
-                sec:authorize="isAuthenticated()"
-                th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
-                th:text="수정">
-            </a>
-            <a href="javascript:void(0);"
-                th:data-uri="@{|/question/delete/${question.id}|}"
-                class="btn btn-sm btn-outline-secondary delete"
-                sec:authorize="isAuthenticated()"
-                th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
-                th:text="삭제">
-            </a>
         </div>
 
         <!-- 답변 개수 표시 -->
@@ -39,20 +58,28 @@
         <!-- 답변 반복 시작 -->
         <div class="card my-3" th:each="answer : ${question.answerList}" th:data-answer-id="${answer.id}">
             <div class="card-body">
+                <a th:id="|answer_${answer.id}|"></a>
                 <!-- 답변 내용 (수정 모드가 아닐 때) -->
                 <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}" th:if="${answerForm == null or answerForm.id == null or answer.id != answerForm.id}"></div>
                 
                 <!-- 답변 수정 폼 (수정 모드일 때) -->
                 <form th:if="${answerForm != null and answerForm.id != null and answer.id == answerForm.id}" th:action="@{|/answer/modify/${answer.id}|}" method="post" th:object="${answerForm}">
                     <div th:replace="~{form_errors :: formErrorsFragment}"></div>
-                    <textarea name="content" class="form-control form-control-sm" rows="2" th:field="*{content}" placeholder="내용을 입력해주세요." autofocus></textarea>
+                    <textarea name="content" class="form-control form-control-sm" rows="5" th:field="*{content}" placeholder="내용을 입력해주세요."></textarea>
                     <div class="mt-2">
                         <button type="submit" class="btn btn-sm btn-primary">수정완료</button>
                         <a th:href="@{|/question/detail/${question.id}|}" class="btn btn-sm btn-secondary">취소</a>
                     </div>
                 </form>
                 
-                <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-end" th:if="${answerForm == null or answerForm.id == null or answer.id != answerForm.id}">
+                    <div class="badge bg-light text-dark p-2 text-start" th:if="${answer.modifyDate != null} and ${answer.modifyDate != answer.createDate}">
+                        <div class="mb-2">
+                            <span>modified at</span>
+                            <span th:if="${answer.modifyCount != null and answer.modifyCount > 0}" th:text="'(' + ${answer.modifyCount} + '회)'">(1회)</span>
+                        </div>
+                        <div th:text="${#temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00</span></div>
+                    </div>
                     <div class="badge bg-light text-dark p-2 text-start">
                         <div class="mb-2">
                             <span th:if="${answer.author != null}" th:text="${answer.author.username}"></span>
@@ -60,11 +87,25 @@
                         <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm:ss')}">2024-05-25 12:00</span></div>
                     </div>
                 </div>
-                <div class="my-3">
+                <div class="my-3" th:if="${answerForm == null or answerForm.id == null or answer.id != answerForm.id}">
+                    <a th:href="@{|/answer/vote/${answer.id}|}"
+                        class="btn btn-sm vote-btn"
+                        th:classappend="${#authorization.expression('isAuthenticated()') and answer.voter.?[username == #authentication.getName()].size() > 0 ? 'btn-primary voted' : 'btn-outline-secondary'}"
+                        th:data-authenticated="${#authorization.expression('isAuthenticated()')}"
+                        th:data-is-author="${#authorization.expression('isAuthenticated()') and answer.author != null and #authentication.getName() == answer.author.username}"
+                        th:text="|추천 ${#sets.size(answer.voter)}|">
+                    </a>
                     <a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
                         sec:authorize="isAuthenticated()"
-                        th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username and (answerForm == null or answerForm.id == null or answer.id != answerForm.id)}"
+                        th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
                         th:text="수정">
+                    </a>
+                    <a href="javascript:void(0);"
+                        th:data-uri="@{|/answer/delete/${answer.id}|}"
+                        class="btn btn-sm btn-outline-secondary delete"
+                        sec:authorize="isAuthenticated()"
+                        th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == answer.author.username}"
+                        th:text="삭제">
                     </a>
                 </div>
             </div>
@@ -73,7 +114,7 @@
         <!-- 답변 등록 폼 -->
         <form th:if="${answerForm == null or answerForm.id == null}" th:action="@{|/answer/create/${question.id}|}" method="post" class="my-3" th:object="${answer}">
             <div th:replace="~{form_errors :: formErrorsFragment}"></div>
-            <textarea sec:authorize="isAuthenticated()" name="content" id="content" th:field="*{content}" class="form-control form-control-sm" rows="2" placeholder="내용을 입력해주세요." autofocus></textarea>
+            <textarea sec:authorize="isAuthenticated()" name="content" id="content" th:field="*{content}" class="form-control form-control-sm" rows="5" placeholder="내용을 입력해주세요."></textarea>
             <input sec:authorize="isAuthenticated()" type="submit" value="답변 등록" id="submitBtn" class="btn btn-primary my-2">
         </form>
 

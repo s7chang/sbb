@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
@@ -67,14 +68,14 @@ public class QuestionController {
     // 질문 등록 폼
     @GetMapping("/create")
     @PreAuthorize("isAuthenticated()")
-    public String questionCreate(Question question) {
+    public String create(Question question) {
         return "question_form";
     }
 
     // 질문 등록 처리
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
-    public String questionCreate(@Valid Question question, BindingResult bindingResult, Principal principal) {
+    public String create(@Valid Question question, BindingResult bindingResult, Principal principal) {
         // 유효성 검사
         if (bindingResult.hasErrors()) {
             return "question_form";
@@ -87,7 +88,7 @@ public class QuestionController {
     // 질문 수정
     @GetMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String questionModify(Model model, @PathVariable("id") Integer id, Principal principal) {
+    public String modify(Model model, @PathVariable("id") Integer id, Principal principal) {
         Question question = this.questionService.getQuestion(id);
         if(!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
@@ -99,7 +100,7 @@ public class QuestionController {
     // 질문 수정 처리
     @PostMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String questionModify(@Valid Question questionForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id) {
+    public String modify(@Valid Question questionForm, BindingResult bindingResult, Principal principal, @PathVariable("id") Integer id) {
 
         if (bindingResult.hasErrors()) {
             return "question_form";
@@ -117,12 +118,29 @@ public class QuestionController {
     // 질문 삭제
     @GetMapping("/delete/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String questionDelete(@PathVariable("id") Integer id, Principal principal) {
+    public String delete(@PathVariable("id") Integer id, Principal principal) {
         Question question = this.questionService.getQuestion(id);
         if (!question.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         this.questionService.delete(question);
         return "redirect:/";
+    }
+
+    // 질문 추천
+    @GetMapping("/vote/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String vote(@PathVariable("id") Integer id, Principal principal, RedirectAttributes redirectAttributes) {
+        Question question = this.questionService.getQuestion(id);
+        UserEntity user = this.userService.getUser(principal.getName());
+        
+        // 자기 자신의 질문은 추천할 수 없음
+        if (question.getAuthor().equals(user)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 질문은 추천할 수 없습니다.");
+            return String.format("redirect:/question/detail/%s", id);
+        }
+        
+        this.questionService.vote(question, user);
+        return String.format("redirect:/question/detail/%s", id);
     }
 }

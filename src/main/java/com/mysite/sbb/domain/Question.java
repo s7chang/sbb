@@ -2,6 +2,7 @@ package com.mysite.sbb.domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -14,6 +15,8 @@ import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
@@ -60,6 +63,16 @@ public class Question {
 	@LastModifiedDate
 	@Column(columnDefinition = "datetime default now()")
 	private LocalDateTime modifyDate;
+
+	// 수정 횟수
+	@Builder.Default
+	@Column(columnDefinition = "integer default 0")
+	private Integer modifyCount = 0;
+
+	// 추천한 사용자 목록 (ManyToMany 관계)
+	@ManyToMany
+	@JoinTable(name = "question_voter")
+	private Set<UserEntity> voter;
 
 	// ★★★★★
 	// 질문 1개에 대한 답변은 여러 개가 생성됨

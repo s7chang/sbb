@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mysite.sbb.domain.Answer;
 import com.mysite.sbb.domain.Question;
@@ -34,7 +35,7 @@ public class AnswerController {
     // 답변 등록
     @PostMapping("/create/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String createAnswer(Model model, @PathVariable("id") Integer id, @Valid Answer answerForm, BindingResult bindingResult, Principal principal) {
+    public String create(Model model, @PathVariable("id") Integer id, @Valid Answer answerForm, BindingResult bindingResult, Principal principal) {
         
         Question question = this.questionService.getQuestion(id);
         // 유효성 검사
@@ -44,13 +45,13 @@ public class AnswerController {
         }
         UserEntity author = this.userService.getUser(principal.getName());
 
-        this.answerService.create(question, answerForm.getContent(), author);
-        return String.format("redirect:/question/detail/%s", id);
+        Answer answer = this.answerService.create(question, answerForm.getContent(), author);
+        return String.format("redirect:/question/detail/%s#answer_%s", id, answer.getId());
     }
 
     @GetMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String modifyAnswer(Model model, @PathVariable("id") Integer id, Principal principal) {
+    public String modify(Model model, @PathVariable("id") Integer id, Principal principal) {
         Answer answer = this.answerService.getAnswer(id);
         if (!answer.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
@@ -64,7 +65,7 @@ public class AnswerController {
     // 답변 수정
     @PostMapping("/modify/{id}")
     @PreAuthorize("isAuthenticated()")
-    public String modifyAnswer(Model model, @Valid Answer answerForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
+    public String modify(Model model, @Valid Answer answerForm, BindingResult bindingResult, @PathVariable("id") Integer id, Principal principal) {
         
         Answer answer = this.answerService.getAnswer(id);
         Question question = answer.getQuestion();
@@ -85,6 +86,35 @@ public class AnswerController {
         }
         
         this.answerService.modify(answer, answerForm.getContent());
-        return String.format("redirect:/question/detail/%s", question.getId());
+        return String.format("redirect:/question/detail/%s#answer_%s", question.getId(), id);
+    }
+
+    // 질문 삭제
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String delete(@PathVariable("id") Integer id, Principal principal) {
+        Answer answer = this.answerService.getAnswer(id);
+        if (!answer.getAuthor().getUsername().equals(principal.getName())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
+        }
+        this.answerService.delete(answer);
+        return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+    }
+
+    // 답변 추천
+    @GetMapping("/vote/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public String vote(@PathVariable("id") Integer id, Principal principal, RedirectAttributes redirectAttributes) {
+        Answer answer = this.answerService.getAnswer(id);
+        UserEntity user = this.userService.getUser(principal.getName());
+        
+        // 자기 자신의 답변은 추천할 수 없음
+        if (answer.getAuthor().equals(user)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "본인이 작성한 답변은 추천할 수 없습니다.");
+            return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), id);
+        }
+        
+        this.answerService.vote(answer, user);
+        return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), id);
     }
 }
