@@ -10,7 +10,7 @@
         <h2 class="border-bottom py-2" th:text="${question.subject}">질문 제목</h2>
         <div class="card my-3">
             <div class="card-body">
-                <div class="card-text" style= "white-space: pre-line;" th:text="${question.content}">
+                <div class="card-text" th:utext="${@commonUtil.markdown(question.content)}">
                     질문 내용이 표시됩니다.
                 </div>
                 <div class="d-flex justify-content-end">
@@ -60,7 +60,7 @@
             <div class="card-body">
                 <a th:id="|answer_${answer.id}|"></a>
                 <!-- 답변 내용 (수정 모드가 아닐 때) -->
-                <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}" th:if="${answerForm == null or answerForm.id == null or answer.id != answerForm.id}"></div>
+                <div class="card-text" th:utext="${@commonUtil.markdown(answer.content)}" th:if="${answerForm == null or answerForm.id == null or answer.id != answerForm.id}"></div>
                 
                 <!-- 답변 수정 폼 (수정 모드일 때) -->
                 <form th:if="${answerForm != null and answerForm.id != null and answer.id == answerForm.id}" th:action="@{|/answer/modify/${answer.id}|}" method="post" th:object="${answerForm}">

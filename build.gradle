@@ -63,6 +63,11 @@ dependencies {
 	// Thymeleaf 설정
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
+	// 마크다운 설정
+	implementation 'org.commonmark:commonmark:0.25.0'
+	implementation 'org.commonmark:commonmark-ext-gfm-tables:0.25.0'
+
 }
 
 tasks.named('test') {

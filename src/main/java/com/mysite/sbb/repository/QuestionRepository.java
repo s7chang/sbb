@@ -1,5 +1,8 @@
 package com.mysite.sbb.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,4 +14,6 @@ import com.mysite.sbb.domain.Question;
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	// 1. subject 필드를 통해 데이터 조회
 	Question findBySubject(String subject);
+
+	Page<Question> findAll(Specification<Question> spec, Pageable pageable);
 }
